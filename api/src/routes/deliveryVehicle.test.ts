@@ -78,4 +78,14 @@ describe('DeliveryVehicle API', () => {
     const response = await request(app).delete('/delivery-vehicles/999');
     expect(response.status).toBe(404);
   });
+
+  it('should filter delivery vehicles by status', async () => {
+    const response = await request(app).get('/delivery-vehicles/status/available');
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+    // All returned vehicles must have the requested status
+    response.body.forEach((v: { status: string }) => {
+      expect(v.status).toBe('available');
+    });
+  });
 });

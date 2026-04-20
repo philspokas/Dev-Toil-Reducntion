@@ -44,6 +44,21 @@ export class DeliveryVehiclesRepository {
   }
 
   /**
+   * Get delivery vehicles by status
+   */
+  async findByStatus(status: DeliveryVehicle['status']): Promise<DeliveryVehicle[]> {
+    try {
+      const rows = await this.db.all<DatabaseRow>(
+        'SELECT * FROM delivery_vehicles WHERE status = ? ORDER BY delivery_vehicle_id',
+        [status],
+      );
+      return mapDatabaseRows<DeliveryVehicle>(rows);
+    } catch (error) {
+      handleDatabaseError(error);
+    }
+  }
+
+  /**
    * Get delivery vehicles by supplier ID
    */
   async findBySupplierId(supplierId: number): Promise<DeliveryVehicle[]> {

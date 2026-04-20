@@ -118,6 +118,31 @@
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/DeliveryVehicle'
+ *
+ * /api/delivery-vehicles/status/{status}:
+ *   get:
+ *     summary: Get all delivery vehicles by status
+ *     tags: [DeliveryVehicles]
+ *     parameters:
+ *       - in: path
+ *         name: status
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - available
+ *             - in-transit
+ *             - maintenance
+ *         description: Vehicle operational status
+ *     responses:
+ *       200:
+ *         description: List of delivery vehicles with the given status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/DeliveryVehicle'
  */
 
 import express from 'express';
@@ -132,6 +157,19 @@ router.get('/supplier/:supplierId', async (req, res, next) => {
   try {
     const repo = await getDeliveryVehiclesRepository();
     const vehicles = await repo.findBySupplierId(parseInt(req.params.supplierId));
+    res.json(vehicles);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get all delivery vehicles by status — must come before /:id to avoid route conflict
+router.get('/status/:status', async (req, res, next) => {
+  try {
+    const repo = await getDeliveryVehiclesRepository();
+    const vehicles = await repo.findByStatus(
+      req.params.status as DeliveryVehicle['status'],
+    );
     res.json(vehicles);
   } catch (error) {
     next(error);

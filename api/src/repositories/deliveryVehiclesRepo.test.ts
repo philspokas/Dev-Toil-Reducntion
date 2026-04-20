@@ -145,6 +145,50 @@ describe('DeliveryVehiclesRepository', () => {
         });
     });
 
+    describe('findByStatus', () => {
+        it('should return vehicles with the given status', async () => {
+            const mockResults = [
+                {
+                    delivery_vehicle_id: 1,
+                    supplier_id: 1,
+                    vehicle_type: 'Truck',
+                    license_plate: 'CAT-TRK-001',
+                    capacity: 5000.0,
+                    status: 'available',
+                    last_inspection_date: null
+                },
+                {
+                    delivery_vehicle_id: 4,
+                    supplier_id: 2,
+                    vehicle_type: 'Drone',
+                    license_plate: 'CAT-DRN-001',
+                    capacity: 25.0,
+                    status: 'available',
+                    last_inspection_date: null
+                }
+            ];
+            mockDb.all.mockResolvedValue(mockResults);
+
+            const result = await repository.findByStatus('available');
+
+            expect(mockDb.all).toHaveBeenCalledWith(
+                'SELECT * FROM delivery_vehicles WHERE status = ? ORDER BY delivery_vehicle_id',
+                ['available']
+            );
+            expect(result).toHaveLength(2);
+            expect(result[0].status).toBe('available');
+            expect(result[1].status).toBe('available');
+        });
+
+        it('should return empty array when no vehicles have the given status', async () => {
+            mockDb.all.mockResolvedValue([]);
+
+            const result = await repository.findByStatus('maintenance');
+
+            expect(result).toEqual([]);
+        });
+    });
+
     describe('create', () => {
         it('should create a new delivery vehicle and return it', async () => {
             const newVehicle = {
