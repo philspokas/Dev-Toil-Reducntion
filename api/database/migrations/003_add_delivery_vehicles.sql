@@ -14,4 +14,3 @@ CREATE TABLE IF NOT EXISTS delivery_vehicles (
 -- Indexes for common queries
 CREATE INDEX IF NOT EXISTS idx_delivery_vehicles_supplier_id ON delivery_vehicles(supplier_id);
 CREATE INDEX IF NOT EXISTS idx_delivery_vehicles_status ON delivery_vehicles(status);
-CREATE INDEX IF NOT EXISTS idx_delivery_vehicles_license_plate ON delivery_vehicles(license_plate);

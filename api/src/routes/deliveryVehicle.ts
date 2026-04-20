@@ -168,7 +168,7 @@ router.get('/:id', async (req, res, next) => {
     if (vehicle) {
       res.json(vehicle);
     } else {
-      res.status(404).send('Delivery vehicle not found');
+      next(new NotFoundError('DeliveryVehicle', parseInt(req.params.id)));
     }
   } catch (error) {
     next(error);
